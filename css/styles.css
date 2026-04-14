@@ -1088,8 +1088,8 @@ img {
 }
 
 .whatsapp-float {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     background: var(--color-whatsapp);
     border-radius: 50%;
     display: flex;
@@ -1097,6 +1097,30 @@ img {
     justify-content: center;
     box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
     transition: all 0.3s ease;
+}
+
+.whatsapp-container {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 999;
+}
+
+.whatsapp-float {
+    width: 52px;
+    height: 52px;
+    background: var(--color-whatsapp);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.whatsapp-float svg {
+    width: 26px;
+    height: 26px;
+    color: #fff;
+}
     animation: whatsappPulse 2s ease-in-out infinite;
 }
 
@@ -1648,6 +1672,44 @@ img {
     
     .header-actions {
         display: none;
+    }
+    
+    .header-actions.mobile-show {
+        display: flex;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--color-bg-card);
+        flex-direction: column;
+        padding: 16px;
+        gap: 12px;
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .theme-toggle {
+        display: flex;
+    }
+
+    /* WhatsApp float responsive */
+    .whatsapp-container {
+        bottom: 80px;
+        right: 16px;
+    }
+    
+    .whatsapp-float {
+        width: 52px;
+        height: 52px;
+    }
+    
+    .whatsapp-float svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Dark mode toggle visible on mobile */
+    .nav-toggle {
+        display: flex;
     }
     
     .suit-container {
