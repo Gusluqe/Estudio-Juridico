@@ -1,0 +1,11 @@
+{
+  "name": "estudio-juridico",
+  "version": "1.0.0",
+  "description": "Estudio Jurídico Landing Page",
+  "scripts": {
+    "dev": "serve -p 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.6"
+  }
+}
