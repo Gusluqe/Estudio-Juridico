@@ -212,7 +212,7 @@ ul, ol { list-style: none; }
     max-width: 34rem;
     margin-bottom: 2.25rem;
 }
-.caratula-materia span { color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; }
+.caratula-materia > span:first-child { color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; }
 .caratula-acciones { display: flex; flex-wrap: wrap; gap: 0.8rem; }
 
 /* sello giratorio */
@@ -583,6 +583,70 @@ ul, ol { list-style: none; }
     color: var(--accent-deep);
 }
 
+/* calculadora de indemnización */
+.calc {
+    margin-bottom: 1.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--accent-line);
+    border-radius: 6px;
+    background: var(--paper);
+}
+.calc[hidden] { display: none; }
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 1rem 0 1.25rem;
+}
+.calc-grid label span {
+    display: block;
+    font-size: 0.78125rem; font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+.calc-grid input[type="number"], .calc-grid input[type="date"] {
+    width: 100%;
+    font: inherit; font-size: 0.9375rem;
+    color: var(--t-pap-hi);
+    background: var(--paper-2);
+    border: 1px solid var(--line-pap);
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+}
+.calc-grid input:focus { outline: none; border-color: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-soft); }
+.calc-check {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.875rem;
+}
+.calc-check input { width: 17px; height: 17px; accent-color: var(--accent-deep); }
+.calc-check span { margin: 0 !important; font-weight: 500 !important; }
+.calc-result { margin-top: 1.5rem; animation: triage-in 0.4s var(--ease-out); }
+.calc-result[hidden] { display: none; }
+.calc-rubros { border-top: 1px solid var(--line-pap); max-width: 620px; }
+.calc-rubro {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+    padding-block: 0.55rem;
+    border-bottom: 1px solid var(--line-pap);
+    font-size: 0.875rem;
+}
+.calc-rubro dt { color: var(--t-pap-lo); }
+.calc-rubro dd { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.calc-total {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-block: 1rem 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--t-pap-lo);
+}
+.calc-total strong {
+    font-family: var(--font-display);
+    font-weight: 580;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    letter-spacing: -0.01em;
+    color: var(--accent-deep);
+    font-variant-numeric: tabular-nums;
+}
+.calc-result .btn { margin-bottom: 0.9rem; }
+
 /* formulario "deje sus datos" */
 .dejar-datos {
     margin-top: clamp(2rem, 4vw, 3rem);
@@ -756,6 +820,8 @@ ul, ol { list-style: none; }
     .triage-cta .btn { width: 100%; }
     .contact-form { grid-template-columns: 1fr; }
     .contact-form .btn { justify-self: stretch; }
+    .calc-grid { grid-template-columns: 1fr; }
+    .calc .btn, .calc-result .btn { width: 100%; }
 }
 
 /* ═══ MOVIMIENTO REDUCIDO ═══ */

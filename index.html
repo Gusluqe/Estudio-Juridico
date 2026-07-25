@@ -3,15 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Estudio Jurídico en Buenos Aires. Laboral, civil, accidentes, sucesiones, familia, penal y amparos de salud. Primera consulta sin cargo.">
-    <meta name="keywords" content="abogado, estudio jurídico, derecho laboral, civil, sucesiones, Buenos Aires">
+    <meta name="description" content="Abogados en Buenos Aires: despidos, accidentes, sucesiones, familia y amparos de salud. Más de 20 años ante tribunales de PBA y CABA. Primera consulta sin cargo por WhatsApp.">
+    <meta name="keywords" content="abogado laboral, despido, indemnización, accidente de tránsito, sucesiones, amparo de salud, divorcio, estudio jurídico, Buenos Aires, La Plata, CABA">
     <meta name="author" content="Estudio Jurídico">
-    <meta property="og:title" content="Estudio Jurídico | Su caso, nuestra causa">
-    <meta property="og:description" content="Más de 20 años ante tribunales de Buenos Aires. Primera consulta sin cargo.">
+    <link rel="canonical" href="https://gusluqe.github.io/Estudio-Juridico/">
+    <meta property="og:title" content="Estudio Jurídico | Abogados en Buenos Aires">
+    <meta property="og:description" content="Despidos, accidentes, sucesiones, familia y amparos de salud. Más de 20 años. Primera consulta sin cargo.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_AR">
+    <meta property="og:url" content="https://gusluqe.github.io/Estudio-Juridico/">
+    <meta property="og:image" content="https://gusluqe.github.io/Estudio-Juridico/assets/logo.png">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Estudio Jurídico | Su caso, nuestra causa</title>
+    <title>Estudio Jurídico | Abogados en Buenos Aires · Laboral, Accidentes, Sucesiones</title>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LegalService",
+        "name": "Estudio Jurídico",
+        "description": "Estudio jurídico en Buenos Aires: derecho laboral, accidentes, sucesiones, familia, amparos de salud, civil y penal. Primera consulta sin cargo.",
+        "url": "https://gusluqe.github.io/Estudio-Juridico/",
+        "image": "https://gusluqe.github.io/Estudio-Juridico/assets/logo.png",
+        "telephone": "+54-11-2585-4569",
+        "email": "estudio@juridico.com.ar",
+        "priceRange": "Primera consulta sin cargo",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Buenos Aires",
+            "addressCountry": "AR"
+        },
+        "areaServed": ["Ciudad Autónoma de Buenos Aires", "Provincia de Buenos Aires"],
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "18:00"
+        },
+        "knowsAbout": ["Derecho Laboral", "Despidos", "Accidentes de Tránsito", "Sucesiones", "Derecho de Familia", "Amparos de Salud", "Derecho Civil", "Derecho Penal"]
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -286,6 +316,41 @@
                     <div class="refine-info" id="refine-info" hidden>
                         <p id="refine-texto"></p>
                         <p class="refine-ref" id="refine-ref"></p>
+                    </div>
+                </div>
+
+                <div class="calc" id="calc-despido" hidden>
+                    <h3 class="triage-label">Calcule su indemnización estimada</h3>
+                    <div class="calc-grid">
+                        <label>
+                            <span>Mejor sueldo mensual (bruto; si estaba en negro, lo que cobraba)</span>
+                            <input type="number" id="calc-sueldo" min="0" inputmode="numeric" placeholder="Ej.: 850000">
+                        </label>
+                        <label>
+                            <span>Fecha de ingreso</span>
+                            <input type="date" id="calc-ingreso">
+                        </label>
+                        <label>
+                            <span>Fecha de despido</span>
+                            <input type="date" id="calc-fecha">
+                        </label>
+                        <label class="calc-check">
+                            <input type="checkbox" id="calc-preaviso">
+                            <span>Me preavisaron por escrito (1 o 2 meses antes)</span>
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" id="calc-btn" type="button">Calcular estimado</button>
+                    <p class="form-error" id="calc-error" hidden>Complete el sueldo y las fechas (el despido debe ser posterior al ingreso).</p>
+                    <div class="calc-result" id="calc-result" hidden>
+                        <dl class="calc-rubros" id="calc-rubros"></dl>
+                        <p class="calc-total">Total estimado <strong id="calc-total"></strong></p>
+                        <a class="btn btn-primary" id="calc-wa" href="#" target="_blank" rel="noopener">Que un abogado revise mi caso</a>
+                        <p class="triage-fine">
+                            Cálculo estimado y orientativo, elaborado sobre el art. 245 de la Ley de Contrato de Trabajo
+                            y los rubros habituales de un despido sin causa. El monto real puede variar según convenio,
+                            rubros no registrados, topes y particularidades de cada caso: el profesional abogado evalúa
+                            su situación minuciosamente, sin cargo, antes de cualquier reclamo.
+                        </p>
                     </div>
                 </div>
                 <div class="triage-cta">

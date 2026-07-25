@@ -319,12 +319,86 @@
             refineBox.hidden = true;
         }
 
+        document.getElementById('calc-despido').hidden = key !== 'despido';
+
         triageBox.hidden = false;
         trackEvent('situacion', key);
     }));
+
+    /* ── Calculadora de indemnización (despido sin causa) ── */
+    const fmtARS = n => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
+
+    document.getElementById('calc-btn').addEventListener('click', () => {
+        const sueldo = Number(document.getElementById('calc-sueldo').value);
+        const ingreso = new Date(document.getElementById('calc-ingreso').value + 'T12:00:00');
+        const despido = new Date(document.getElementById('calc-fecha').value + 'T12:00:00');
+        const preavisado = document.getElementById('calc-preaviso').checked;
+        const errorEl = document.getElementById('calc-error');
+
+        if (!sueldo || sueldo <= 0 || isNaN(ingreso) || isNaN(despido) || despido <= ingreso) {
+            errorEl.hidden = false;
+            document.getElementById('calc-result').hidden = true;
+            return;
+        }
+        errorEl.hidden = true;
+
+        const MS_DIA = 86400000;
+        const diasTotales = Math.floor((despido - ingreso) / MS_DIA);
+
+        /* antigüedad art. 245: un sueldo por año o fracción mayor a 3 meses */
+        let anios = despido.getFullYear() - ingreso.getFullYear();
+        const aniv = new Date(ingreso); aniv.setFullYear(ingreso.getFullYear() + anios);
+        if (aniv > despido) anios--;
+        const diasFraccion = Math.floor((despido - new Date(new Date(ingreso).setFullYear(ingreso.getFullYear() + anios))) / MS_DIA);
+        const aniosComputables = Math.max(anios + (diasFraccion > 90 ? 1 : 0), diasTotales > 90 ? 1 : 0);
+
+        const rubros = [];
+        const antiguedad = sueldo * aniosComputables;
+        rubros.push(['Indemnización por antigüedad (art. 245 LCT)', antiguedad]);
+
+        let preavisoMonto = 0, integracion = 0;
+        if (!preavisado) {
+            preavisoMonto = sueldo * (anios >= 5 ? 2 : 1) * (13 / 12);
+            rubros.push(['Preaviso omitido + SAC (arts. 231/232)', preavisoMonto]);
+            const ultimoDia = new Date(despido.getFullYear(), despido.getMonth() + 1, 0).getDate();
+            if (despido.getDate() < ultimoDia) {
+                integracion = sueldo * ((ultimoDia - despido.getDate()) / 30) * (13 / 12);
+                rubros.push(['Integración del mes de despido + SAC (art. 233)', integracion]);
+            }
+        }
+
+        /* SAC proporcional del semestre */
+        const inicioSemestre = new Date(despido.getFullYear(), despido.getMonth() < 6 ? 0 : 6, 1);
+        const diasSemestre = Math.max(Math.floor((despido - Math.max(inicioSemestre, ingreso)) / MS_DIA), 0);
+        const sacProp = (sueldo / 2) * (diasSemestre / 182.5);
+        rubros.push(['Aguinaldo proporcional', sacProp]);
+
+        /* vacaciones proporcionales (art. 156) */
+        const diasVac = aniosComputables > 20 ? 35 : aniosComputables > 10 ? 28 : aniosComputables >= 5 ? 21 : 14;
+        const inicioAnio = new Date(despido.getFullYear(), 0, 1);
+        const diasAnio = Math.max(Math.floor((despido - Math.max(inicioAnio, ingreso)) / MS_DIA), 0);
+        const vacProp = diasVac * (diasAnio / 365) * (sueldo / 25);
+        rubros.push(['Vacaciones proporcionales no gozadas (art. 156)', vacProp]);
+
+        const total = rubros.reduce((s, r) => s + r[1], 0);
+
+        document.getElementById('calc-rubros').innerHTML = rubros
+            .map(([n, v]) => `<div class="calc-rubro"><dt>${n}</dt><dd>${fmtARS(v)}</dd></div>`).join('');
+        document.getElementById('calc-total').textContent = fmtARS(total);
+
+        const msg = encodeURIComponent(
+            `Hola, me despidieron. Usé la calculadora de la página y mi indemnización estimada es ${fmtARS(total)} ` +
+            `(sueldo ${fmtARS(sueldo)}, ${aniosComputables} año${aniosComputables === 1 ? '' : 's'} de antigüedad). Quiero que revisen mi caso.`
+        );
+        document.getElementById('calc-wa').href = `https://wa.me/${settings.phone}?text=${msg}`;
+        document.getElementById('calc-result').hidden = false;
+        trackEvent('calculadora', `estimado ${fmtARS(total)}`);
+    });
+    document.getElementById('calc-wa').addEventListener('click', () => trackEvent('whatsapp', 'calculadora'));
     document.getElementById('triage-wa').addEventListener('click', () => {
-        const activa = document.querySelector('.chip.active');
-        trackEvent('whatsapp', 'situacion-' + (activa ? activa.dataset.situacion : ''));
+        const activa = document.querySelector('#situaciones .chip.active');
+        const sub = document.querySelector('#refine-chips .chip.active');
+        trackEvent('whatsapp', 'situación: ' + (activa ? activa.textContent : '') + (sub ? ' / ' + sub.textContent : ''));
     });
 
     /* ── Disponibilidad según hora de Buenos Aires ── */

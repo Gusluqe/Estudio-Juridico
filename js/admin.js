@@ -56,9 +56,26 @@
     function renderAll() {
         renderKpis();
         renderChannels();
+        renderOrientador();
         renderLeads();
         fillConfig();
         fillTexts();
+    }
+
+    function renderOrientador() {
+        const TIPOS = { situacion: 'Eligió', calculadora: 'Calculadora', whatsapp: 'WhatsApp', formulario: 'Formulario' };
+        const items = getEvents()
+            .filter(e => e.type === 'situacion' || e.type === 'calculadora' || e.type === 'formulario' ||
+                (e.type === 'whatsapp' && /situaci|calculadora|formulario/.test(String(e.source))))
+            .sort((a, b) => b.at - a.at)
+            .slice(0, 20);
+        document.getElementById('orientador-empty').hidden = items.length > 0;
+        document.getElementById('orientador-log').innerHTML = items.map(e => {
+            const f = new Date(e.at);
+            const fecha = f.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) + ' ' +
+                f.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            return `<li><span class="ol-fecha">${fecha}</span><span class="ol-tipo">${TIPOS[e.type] || e.type}</span><span>${esc(e.source)}</span></li>`;
+        }).join('');
     }
 
     function renderKpis() {
