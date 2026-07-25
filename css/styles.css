@@ -560,7 +560,71 @@ ul, ol { list-style: none; }
     color: var(--accent-deep);
 }
 .triage-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
-.triage-fine { font-size: 0.78125rem; color: var(--t-pap-lo); max-width: 34ch; }
+.triage-fine { font-size: 0.78125rem; color: var(--t-pap-lo); max-width: 40ch; }
+
+/* profundización */
+.refine {
+    margin-bottom: 1.75rem;
+    padding: 1.4rem 1.5rem 1.5rem;
+    background: var(--paper-2);
+    border-radius: 6px;
+}
+.refine[hidden] { display: none; }
+.refine-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip-sm { font-size: 0.71875rem; padding: 0.45rem 0.8rem; background: var(--paper); }
+.refine-info { margin-top: 1.25rem; max-width: 68ch; animation: triage-in 0.4s var(--ease-out); }
+.refine-info[hidden] { display: none; }
+.refine-info p { font-size: 0.9375rem; }
+.refine-ref {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.71875rem;
+    letter-spacing: 0.03em;
+    color: var(--accent-deep);
+}
+
+/* formulario "deje sus datos" */
+.dejar-datos {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--line-pap);
+    border-radius: 6px;
+    background: var(--paper-2);
+}
+.dejar-lede { color: var(--t-pap-lo); font-size: 0.9375rem; margin: 0.3rem 0 1.25rem; }
+.contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+.contact-form[hidden] { display: none; }
+.contact-form input, .contact-form select, .contact-form textarea {
+    font: inherit; font-size: 0.9375rem;
+    color: var(--t-pap-hi);
+    background: var(--paper);
+    border: 1px solid var(--line-pap);
+    border-radius: 6px;
+    padding: 0.7rem 0.9rem;
+    width: 100%;
+}
+.contact-form textarea { grid-column: 1 / -1; resize: vertical; }
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-deep);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.contact-form .form-error { grid-column: 1 / -1; color: oklch(48% 0.19 28); font-size: 0.875rem; margin: 0; }
+.contact-form .btn { justify-self: start; }
+.contact-form .triage-fine { align-self: center; }
+.contact-ok { animation: triage-in 0.4s var(--ease-out); }
+.contact-ok[hidden] { display: none; }
+.contact-ok-titulo {
+    font-family: var(--font-display);
+    font-weight: 580; font-size: 1.25rem;
+    color: var(--accent-deep);
+}
+.contact-ok p { margin-bottom: 0.9rem; font-size: 0.9375rem; color: var(--t-pap-lo); }
+.contact-ok .contact-ok-titulo { color: var(--accent-deep); margin-bottom: 0.3rem; }
 
 /* disponibilidad en carátula */
 .disponibilidad {
@@ -690,6 +754,8 @@ ul, ol { list-style: none; }
     .sello-giratorio { display: none; }
     .triage-grid { grid-template-columns: 1fr; }
     .triage-cta .btn { width: 100%; }
+    .contact-form { grid-template-columns: 1fr; }
+    .contact-form .btn { justify-self: stretch; }
 }
 
 /* ═══ MOVIMIENTO REDUCIDO ═══ */

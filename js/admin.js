@@ -58,6 +58,7 @@
         renderChannels();
         renderLeads();
         fillConfig();
+        fillTexts();
     }
 
     function renderKpis() {
@@ -77,6 +78,7 @@
             : null;
         const stats = [
             { name: 'WhatsApp', value: count('whatsapp'), hint: 'clicks en botones de chat' },
+            { name: 'Formulario', value: count('formulario'), hint: 'datos dejados en la página' },
             { name: 'Email', value: count('email'), hint: 'clicks en el mail de contacto' },
             { name: 'Instagram', value: count('instagram'), hint: 'clicks al perfil' },
             { name: 'Orientador', value: situaciones.length, hint: masElegida ? `situación más elegida: ${masElegida}` : 'usos de "Su situación"' }
@@ -267,6 +269,39 @@
         applyTheme(theme);
         configSaved.hidden = false;
         setTimeout(() => { configSaved.hidden = true; }, 2200);
+    });
+
+    /* ═══ Textos del sitio ═══ */
+    const textsForm = document.getElementById('texts-form');
+    const textsSaved = document.getElementById('texts-saved');
+    const TEXT_KEYS = ['tituloL1', 'tituloL2', 'materia', 'destacado', 'estudio', 'pie1', 'pie2'];
+
+    function fillTexts() {
+        const t = getSettings().texts || {};
+        TEXT_KEYS.forEach(k => { if (textsForm[k]) textsForm[k].value = t[k] || ''; });
+    }
+
+    textsForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const s = getSettings();
+        const t = {};
+        TEXT_KEYS.forEach(k => {
+            const v = String(textsForm[k].value || '').trim();
+            if (v) t[k] = v;
+        });
+        if (Object.keys(t).length) s.texts = t; else delete s.texts;
+        writeJSON('ej_settings', s);
+        textsSaved.hidden = false;
+        setTimeout(() => { textsSaved.hidden = true; }, 2200);
+    });
+
+    document.getElementById('btn-texts-reset').addEventListener('click', () => {
+        const s = getSettings();
+        delete s.texts;
+        writeJSON('ej_settings', s);
+        fillTexts();
+        textsSaved.hidden = false;
+        setTimeout(() => { textsSaved.hidden = true; }, 2200);
     });
 
     /* ═══ Arranque ═══ */

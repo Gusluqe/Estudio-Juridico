@@ -55,10 +55,10 @@
         <div class="caratula-cuerpo">
             <p class="folio-label">Expediente Nº 2026 · Carátula</p>
             <h1 class="caratula-titulo">
-                Su caso,<br><em>nuestra causa.</em>
+                <span id="ed-titulo-1">Su caso,</span><br><em id="ed-titulo-2">nuestra causa.</em>
             </h1>
             <p class="caratula-materia">
-                <span>Materia:</span> despidos · accidentes · sucesiones · familia · amparos de salud · penal · civil
+                <span>Materia:</span> <span id="ed-materia">despidos · accidentes · sucesiones · familia · amparos de salud · penal · civil</span>
             </p>
 
             <div class="caratula-acciones">
@@ -93,8 +93,8 @@
         </div>
 
         <footer class="caratula-pie">
-            <p>Colegio de Procuradores de Buenos Aires</p>
-            <p>Jurisdicción provincial y federal · Lun a Vie, 9 a 18 h</p>
+            <p id="ed-pie-1">Colegio de Procuradores de Buenos Aires</p>
+            <p id="ed-pie-2">Jurisdicción provincial y federal · Lun a Vie, 9 a 18 h</p>
         </footer>
     </aside>
 
@@ -110,14 +110,14 @@
             </header>
             <div class="foja-cuerpo estudio-cols">
                 <div class="reveal">
-                    <p class="destacado">
+                    <p class="destacado" id="ed-destacado">
                         Veinte años de oficio ante tribunales de la Provincia
                         y de la Ciudad de Buenos Aires, con una premisa simple:
                         cada expediente tiene una persona detrás.
                     </p>
                 </div>
                 <div class="reveal">
-                    <p>
+                    <p id="ed-estudio">
                         Estrategia a medida, comunicación directa con el abogado
                         que lleva su causa y un idioma que cualquiera entiende.
                         Sin promesas vacías ni tecnicismos innecesarios.
@@ -280,9 +280,17 @@
                         <ul class="triage-docs" id="triage-docs"></ul>
                     </div>
                 </div>
+                <div class="refine" id="triage-refine" hidden>
+                    <h3 class="triage-label" id="refine-q"></h3>
+                    <div class="refine-chips" id="refine-chips"></div>
+                    <div class="refine-info" id="refine-info" hidden>
+                        <p id="refine-texto"></p>
+                        <p class="refine-ref" id="refine-ref"></p>
+                    </div>
+                </div>
                 <div class="triage-cta">
                     <a class="btn btn-primary" id="triage-wa" href="#" target="_blank" rel="noopener">Contar mi caso por WhatsApp</a>
-                    <p class="triage-fine">Orientación general. Su caso concreto se evalúa en la consulta, sin cargo.</p>
+                    <p class="triage-fine">Orientación general basada en la normativa vigente. Su caso concreto se evalúa en la consulta, sin cargo.</p>
                 </div>
             </div>
         </section>
@@ -337,6 +345,35 @@
                     <span class="canal-dato">@estudiojuridico</span>
                     <span class="canal-nota">derechos explicados sin jerga</span>
                 </a>
+            </div>
+
+            <div class="dejar-datos reveal" id="dejar-datos">
+                <h3 class="triage-label">¿Prefiere que lo contactemos?</h3>
+                <p class="dejar-lede">Deje sus datos y un abogado se comunica con usted dentro del día hábil.</p>
+                <form class="contact-form" id="contact-form" novalidate>
+                    <input type="text" name="name" autocomplete="name" required placeholder="Nombre y apellido">
+                    <input type="tel" name="phone" autocomplete="tel" required placeholder="Su WhatsApp (ej.: 11 5555-5555)">
+                    <select name="area" required>
+                        <option value="" disabled selected>Tema de la consulta</option>
+                        <option>Derecho Laboral</option>
+                        <option>Accidentes de Tránsito</option>
+                        <option>Sucesiones</option>
+                        <option>Derecho de Familia</option>
+                        <option>Amparos de Salud</option>
+                        <option>Derecho Civil</option>
+                        <option>Derecho Penal</option>
+                        <option>Otra consulta</option>
+                    </select>
+                    <textarea name="notes" rows="3" placeholder="Cuéntenos brevemente su caso (opcional)"></textarea>
+                    <p class="form-error" id="contact-error" hidden>Complete su nombre, WhatsApp y el tema.</p>
+                    <button type="submit" class="btn btn-primary">Enviar mis datos</button>
+                    <p class="triage-fine">Sus datos se usan únicamente para responder su consulta.</p>
+                </form>
+                <div class="contact-ok" id="contact-ok" hidden>
+                    <p class="contact-ok-titulo">Recibimos sus datos ✓</p>
+                    <p>Para acelerar la respuesta, ábranos un chat: su consulta ya va escrita.</p>
+                    <a class="btn btn-primary" id="contact-ok-wa" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+                </div>
             </div>
 
             <p class="vcard-row reveal">

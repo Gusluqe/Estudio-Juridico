@@ -21,6 +21,22 @@
     /* ── Paleta elegida desde el panel admin ── */
     if (settings.theme) document.documentElement.dataset.theme = settings.theme;
 
+    /* ── Textos editables desde el panel admin ── */
+    const texts = settings.texts || {};
+    const EDITABLES = {
+        tituloL1: 'ed-titulo-1',
+        tituloL2: 'ed-titulo-2',
+        materia: 'ed-materia',
+        destacado: 'ed-destacado',
+        estudio: 'ed-estudio',
+        pie1: 'ed-pie-1',
+        pie2: 'ed-pie-2'
+    };
+    Object.entries(EDITABLES).forEach(([key, id]) => {
+        const el = document.getElementById(id);
+        if (el && texts[key]) el.textContent = texts[key];
+    });
+
     /* ── Aplicar settings a los enlaces del sitio ── */
     document.querySelectorAll('a[href^="https://wa.me/"]').forEach(a => {
         const url = new URL(a.href);
@@ -149,18 +165,162 @@
             docs: ['DNI', 'Cualquier papel o mensaje relacionado con su consulta']
         }
     };
+
+    /* Segunda pregunta por situación, con normativa argentina vigente */
+    const REFINE = {
+        despido: {
+            q: 'Contanos un poco más: ¿cómo fue el despido?',
+            opciones: [
+                {
+                    label: 'Sin causa, me echaron',
+                    texto: 'Le corresponde indemnización por antigüedad (un sueldo por año trabajado o fracción mayor a tres meses), más preaviso, integración del mes de despido y proporcionales de aguinaldo y vacaciones. Tiene dos años para reclamar, pero cuanto antes intime por telegrama, mejor.',
+                    ref: 'Arts. 231, 233, 245 y 256, Ley de Contrato de Trabajo 20.744.'
+                },
+                {
+                    label: 'Dicen que fue con causa',
+                    texto: 'La causa invocada debe ser grave, real y comunicada por escrito con detalle; si no, el despido se paga como uno sin causa. Rechace la causal por telegrama apenas lo reciba: el silencio puede jugarle en contra. Muchas "causas" no resisten un juicio.',
+                    ref: 'Arts. 242 y 243, Ley de Contrato de Trabajo 20.744.'
+                },
+                {
+                    label: 'Trabajaba en negro',
+                    texto: 'El trabajo no registrado genera los mismos derechos: la indemnización se calcula sobre lo que realmente cobraba, y la relación se prueba con testigos, mensajes, transferencias y horarios. El telegrama laboral es gratuito para el trabajador.',
+                    ref: 'Ley 23.789 (telegrama gratuito) y art. 23, LCT 20.744 (presunción de contrato).'
+                },
+                {
+                    label: 'Me hacen firmar la renuncia',
+                    texto: 'No firme renuncia ni "retiro voluntario" bajo presión: la renuncia hace perder la indemnización y solo vale enviada por usted por telegrama o ante autoridad. Pida tiempo y consulte antes de firmar cualquier papel.',
+                    ref: 'Art. 240, Ley de Contrato de Trabajo 20.744.'
+                }
+            ]
+        },
+        accidente: {
+            q: '¿Dónde ocurrió el accidente?',
+            opciones: [
+                {
+                    label: 'En el trabajo o in itinere',
+                    texto: 'Lo cubre la ART: denúncielo de inmediato ante la ART y su empleador, y exija atención médica a cargo de ella. También cubre el trayecto casa-trabajo (in itinere). Si la ART rechaza el caso o le da el alta antes de tiempo, se cuestiona ante la Comisión Médica con abogado.',
+                    ref: 'Leyes 24.557 y 27.348 (riesgos del trabajo).'
+                },
+                {
+                    label: 'De tránsito (auto, moto, peatón)',
+                    texto: 'Responde el seguro del responsable: guarde la denuncia, fotos, datos de testigos y toda constancia médica. No acepte ofertas rápidas de la aseguradora sin asesorarse: suelen estar muy por debajo de lo que corresponde. Tiene tres años para reclamar.',
+                    ref: 'Arts. 1757, 1769 y 2561, Código Civil y Comercial; Ley 24.449 (seguro obligatorio).'
+                },
+                {
+                    label: 'Caída en vía pública o comercio',
+                    texto: 'Pueden responder el municipio, el consorcio o el comercio por el deber de seguridad. Saque fotos del lugar ese mismo día (vereda rota, piso mojado), pida atención médica con constancia y consiga datos de testigos: la prueba temprana define estos casos.',
+                    ref: 'Art. 1757, Código Civil y Comercial; Ley 24.240 de Defensa del Consumidor.'
+                }
+            ]
+        },
+        sucesion: {
+            q: '¿Qué necesita resolver?',
+            opciones: [
+                {
+                    label: 'Iniciar la sucesión',
+                    texto: 'Se tramita ante el juez del último domicilio del fallecido, en Provincia o en CABA según el caso. Puede iniciarla un solo heredero sin esperar el acuerdo de los demás, y las partidas que falten las pedimos nosotros.',
+                    ref: 'Arts. 2336 y siguientes, Código Civil y Comercial.'
+                },
+                {
+                    label: 'Hay una propiedad para vender',
+                    texto: 'Con la declaratoria de herederos dictada, el inmueble puede venderse incluso por tracto abreviado, sin esperar la inscripción definitiva a nombre de los herederos. Es la vía habitual y ahorra tiempo y gastos.',
+                    ref: 'Art. 16, Ley 17.801 (Registro de la Propiedad Inmueble).'
+                },
+                {
+                    label: 'Conflicto entre herederos',
+                    texto: 'El desacuerdo no frena la sucesión: cada heredero puede actuar con su propio abogado y el juez puede designar un administrador y resolver la partición de los bienes. No hace falta que estén todos de acuerdo para avanzar.',
+                    ref: 'Arts. 2345 y 2371, Código Civil y Comercial.'
+                }
+            ]
+        },
+        salud: {
+            q: '¿Qué le están negando?',
+            opciones: [
+                {
+                    label: 'Medicamento o tratamiento',
+                    texto: 'Si está prescripto por su médico, la obra social o prepaga debe cubrirlo conforme al Programa Médico Obligatorio y las leyes especiales. Con la negativa (o el silencio) se presenta un amparo con medida cautelar: la justicia suele ordenar la cobertura en cuestión de días.',
+                    ref: 'Art. 43, Constitución Nacional; leyes 23.660, 23.661 y 26.682.'
+                },
+                {
+                    label: 'Discapacidad (CUD)',
+                    texto: 'Con el Certificado Único de Discapacidad la cobertura es integral, al cien por ciento: tratamientos, acompañante, transporte y educación. La negativa o la demora se atacan por amparo y es uno de los reclamos con mayor respaldo judicial.',
+                    ref: 'Ley 24.901 (prestaciones por discapacidad).'
+                },
+                {
+                    label: 'Baja, aumentos o afiliación',
+                    texto: 'La prepaga no puede rechazar su afiliación por preexistencias ni darlo de baja de manera arbitraria, y los aumentos deben respetar la regulación vigente. Guarde cartas, mails y comprobantes: el reclamo procede.',
+                    ref: 'Ley 26.682 (marco regulatorio de medicina prepaga).'
+                }
+            ]
+        },
+        familia: {
+            q: '¿Qué tema lo trae?',
+            opciones: [
+                {
+                    label: 'Divorcio',
+                    texto: 'El divorcio es incausado: puede pedirlo uno solo de los cónyuges, sin expresar motivos ni esperar plazos, acompañando una propuesta sobre bienes e hijos. No se necesita el acuerdo del otro para divorciarse.',
+                    ref: 'Arts. 437 y 438, Código Civil y Comercial.'
+                },
+                {
+                    label: 'Alimentos',
+                    texto: 'Los alimentos para los hijos corren hasta los 21 años, y hasta los 25 si estudian y no pueden mantenerse. Se deben desde el reclamo: intimar temprano define desde cuándo se cobran, y el incumplimiento permite retener del sueldo.',
+                    ref: 'Arts. 658 y 663, Código Civil y Comercial.'
+                },
+                {
+                    label: 'Régimen de comunicación',
+                    texto: 'El contacto con los hijos se resuelve priorizando su interés superior; en la Provincia el reclamo pasa primero por una etapa previa ante el juzgado de familia. Documente todo con mensajes y registros y evite cortar el contacto por decisión propia.',
+                    ref: 'Arts. 652 y 555, Código Civil y Comercial; Ley 13.634 (fuero de familia, PBA).'
+                }
+            ]
+        }
+    };
     const chips = document.querySelectorAll('.chip');
     const triageBox = document.getElementById('triage');
+    const refineBox = document.getElementById('triage-refine');
+    const refineInfo = document.getElementById('refine-info');
+    const refineChipsEl = document.getElementById('refine-chips');
+
+    function setTriageWa(texto) {
+        document.getElementById('triage-wa').href =
+            `https://wa.me/${settings.phone}?text=${encodeURIComponent(texto)}`;
+    }
+
     chips.forEach(chip => chip.addEventListener('click', () => {
         chips.forEach(c => c.classList.toggle('active', c === chip));
-        const data = TRIAGE[chip.dataset.situacion];
+        const key = chip.dataset.situacion;
+        const data = TRIAGE[key];
         if (!data) return;
         document.getElementById('triage-pasos').innerHTML = data.pasos.map(p => `<li>${p}</li>`).join('');
         document.getElementById('triage-docs').innerHTML = data.docs.map(d => `<li>${d}</li>`).join('');
-        document.getElementById('triage-wa').href =
-            `https://wa.me/${settings.phone}?text=${encodeURIComponent('Hola, ' + data.consulta + '.')}`;
+        setTriageWa('Hola, ' + data.consulta + '.');
+
+        const refine = REFINE[key];
+        refineInfo.hidden = true;
+        if (refine) {
+            document.getElementById('refine-q').textContent = refine.q;
+            refineChipsEl.innerHTML = '';
+            refine.opciones.forEach(op => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'chip chip-sm';
+                b.textContent = op.label;
+                b.addEventListener('click', () => {
+                    refineChipsEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === b));
+                    document.getElementById('refine-texto').textContent = op.texto;
+                    document.getElementById('refine-ref').textContent = op.ref;
+                    refineInfo.hidden = false;
+                    setTriageWa(`Hola, ${data.consulta} (${op.label.toLowerCase()}). Quiero asesorarme.`);
+                    trackEvent('situacion', `${key}: ${op.label}`);
+                });
+                refineChipsEl.appendChild(b);
+            });
+            refineBox.hidden = false;
+        } else {
+            refineBox.hidden = true;
+        }
+
         triageBox.hidden = false;
-        trackEvent('situacion', chip.dataset.situacion);
+        trackEvent('situacion', key);
     }));
     document.getElementById('triage-wa').addEventListener('click', () => {
         const activa = document.querySelector('.chip.active');
@@ -180,6 +340,43 @@
             : 'Fuera de horario · le respondemos a primera hora';
         dispo.hidden = false;
     }
+
+    /* ── Formulario "deje sus datos" ── */
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) contactForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const data = new FormData(contactForm);
+        const name = String(data.get('name') || '').trim();
+        const phone = String(data.get('phone') || '').trim();
+        const area = String(data.get('area') || '').trim();
+        const notes = String(data.get('notes') || '').trim();
+        const errorEl = document.getElementById('contact-error');
+        if (name.length < 2 || phone.replace(/\D/g, '').length < 8 || !area) {
+            errorEl.hidden = false;
+            return;
+        }
+        errorEl.hidden = true;
+
+        const leads = readJSON('ej_leads', []);
+        leads.push({
+            id: `L${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+            name, phone, area, notes,
+            channel: 'formulario',
+            status: 'nuevo',
+            createdAt: Date.now()
+        });
+        writeJSON('ej_leads', leads);
+        trackEvent('formulario', area);
+
+        const msg = encodeURIComponent(
+            `Hola, soy ${name} (WhatsApp ${phone}). Dejé mis datos en la página. Consulta sobre ${area}.${notes ? ' ' + notes : ''}`
+        );
+        document.getElementById('contact-ok-wa').href = `https://wa.me/${settings.phone}?text=${msg}`;
+        contactForm.hidden = true;
+        document.getElementById('contact-ok').hidden = false;
+    });
+    const contactOkWa = document.getElementById('contact-ok-wa');
+    if (contactOkWa) contactOkWa.addEventListener('click', () => trackEvent('whatsapp', 'formulario'));
 
     /* ── Guardar contacto (.vcf) ── */
     const btnVcard = document.getElementById('btn-vcard');

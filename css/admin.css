@@ -320,7 +320,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     font-size: 0.8125rem; font-weight: 600;
     margin-bottom: 0.3rem;
 }
-.config-form input, .config-form select {
+.config-form .span-2 { grid-column: 1 / -1; }
+.config-form textarea { resize: vertical; }
+.config-form input, .config-form select, .config-form textarea {
     width: 100%;
     font: inherit; font-size: 0.9375rem;
     color: var(--t-pap-hi);
@@ -329,7 +331,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     border-radius: 10px;
     padding: 0.65rem 0.9rem;
 }
-.config-form input:focus, .config-form select:focus { outline: none; border-color: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-soft); }
+.config-form input:focus, .config-form select:focus, .config-form textarea:focus { outline: none; border-color: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-soft); }
+.config-form .btn-ghost { border-radius: 999px; }
 .config-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 1rem; }
 .config-saved { color: var(--ok); font-size: 0.875rem; font-weight: 600; }
 .storage-note {

@@ -84,6 +84,7 @@
                 <input type="email" name="email" placeholder="Email (opcional)">
                 <select name="channel">
                     <option value="whatsapp">WhatsApp</option>
+                    <option value="formulario">Formulario web</option>
                     <option value="email">Email</option>
                     <option value="instagram">Instagram</option>
                     <option value="otro">Otro</option>
@@ -122,6 +123,49 @@
                 </table>
                 <p class="empty" id="lead-empty" hidden>Todavía no hay leads registrados en este navegador.</p>
             </div>
+        </section>
+
+        <!-- Textos del sitio -->
+        <section class="sheet" aria-labelledby="h-textos">
+            <div class="sheet-head">
+                <h2 id="h-textos">Textos del sitio</h2>
+                <p>Edite lo que dice la página pública. Deje un campo vacío para volver al texto original.</p>
+            </div>
+            <form class="config-form" id="texts-form">
+                <label>
+                    <span>Título de la carátula, línea 1</span>
+                    <input type="text" name="tituloL1" placeholder="Su caso,">
+                </label>
+                <label>
+                    <span>Título de la carátula, línea 2 (va en itálica)</span>
+                    <input type="text" name="tituloL2" placeholder="nuestra causa.">
+                </label>
+                <label class="span-2">
+                    <span>Materia (temas listados en la carátula)</span>
+                    <input type="text" name="materia" placeholder="despidos · accidentes · sucesiones · familia · amparos de salud · penal · civil">
+                </label>
+                <label class="span-2">
+                    <span>Texto destacado de "El estudio"</span>
+                    <textarea name="destacado" rows="3" placeholder="Veinte años de oficio ante tribunales..."></textarea>
+                </label>
+                <label class="span-2">
+                    <span>Texto secundario de "El estudio"</span>
+                    <textarea name="estudio" rows="3" placeholder="Estrategia a medida, comunicación directa..."></textarea>
+                </label>
+                <label>
+                    <span>Pie de la carátula, línea 1</span>
+                    <input type="text" name="pie1" placeholder="Colegio de Procuradores de Buenos Aires">
+                </label>
+                <label>
+                    <span>Pie de la carátula, línea 2</span>
+                    <input type="text" name="pie2" placeholder="Jurisdicción provincial y federal · Lun a Vie, 9 a 18 h">
+                </label>
+                <div class="config-actions">
+                    <button type="submit" class="btn btn-primary">Guardar textos</button>
+                    <button type="button" class="btn btn-ghost" id="btn-texts-reset">Restaurar originales</button>
+                    <span class="config-saved" id="texts-saved" hidden>Guardado ✓</span>
+                </div>
+            </form>
         </section>
 
         <!-- Configuración -->
