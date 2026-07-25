@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Administración | Estudio Jurídico</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- ══ Puerta de acceso ══ -->
+<div class="gate" id="gate">
+    <form class="gate-card" id="gate-form">
+        <p class="kicker">Estudio Jurídico</p>
+        <h1>Panel de administración</h1>
+        <p class="gate-hint">Ingrese su PIN de acceso.</p>
+        <input type="password" id="gate-pin" inputmode="numeric" autocomplete="off" placeholder="••••" aria-label="PIN de acceso">
+        <p class="gate-error" id="gate-error" hidden>PIN incorrecto.</p>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+        <a class="gate-back" href="index.html">Volver al sitio</a>
+    </form>
+</div>
+
+<!-- ══ Panel ══ -->
+<div class="panel" id="panel" hidden>
+    <header class="topbar">
+        <div class="topbar-brand">
+            <strong>Estudio Jurídico</strong>
+            <span>Administración</span>
+        </div>
+        <div class="topbar-actions">
+            <a href="index.html" target="_blank" rel="noopener">Ver sitio</a>
+            <button id="btn-logout">Salir</button>
+        </div>
+    </header>
+
+    <main class="panel-main">
+        <!-- KPIs -->
+        <section class="kpis" aria-label="Resumen">
+            <p class="kpi"><strong id="kpi-leads">0</strong> leads totales</p>
+            <p class="kpi"><strong id="kpi-nuevos">0</strong> sin contactar</p>
+            <p class="kpi"><strong id="kpi-wa">0</strong> clicks a WhatsApp</p>
+        </section>
+
+        <!-- Canales -->
+        <section class="sheet" aria-labelledby="h-canales">
+            <div class="sheet-head">
+                <h2 id="h-canales">Canales de contacto</h2>
+                <p>Interacciones registradas en el sitio, por canal.</p>
+            </div>
+            <div class="channel-stats" id="channel-stats"></div>
+        </section>
+
+        <!-- Leads -->
+        <section class="sheet" aria-labelledby="h-leads">
+            <div class="sheet-head sheet-head-row">
+                <div>
+                    <h2 id="h-leads">Leads</h2>
+                    <p>Consultas del sitio y contactos cargados a mano.</p>
+                </div>
+                <div class="sheet-tools">
+                    <input type="search" id="lead-search" placeholder="Buscar nombre, teléfono o área">
+                    <select id="lead-filter">
+                        <option value="">Todos los estados</option>
+                        <option value="nuevo">Nuevos</option>
+                        <option value="contactado">Contactados</option>
+                        <option value="cerrado">Cerrados</option>
+                    </select>
+                    <button class="btn btn-ghost" id="btn-export">Exportar CSV</button>
+                    <button class="btn btn-primary" id="btn-add">Agregar lead</button>
+                </div>
+            </div>
+
+            <form class="lead-form" id="lead-form" hidden>
+                <input type="text" name="name" placeholder="Nombre y apellido" required>
+                <input type="tel" name="phone" placeholder="WhatsApp / teléfono">
+                <input type="email" name="email" placeholder="Email (opcional)">
+                <select name="channel">
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="email">Email</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="otro">Otro</option>
+                </select>
+                <select name="area">
+                    <option value="" disabled selected>Área de consulta</option>
+                    <option>Derecho Laboral</option>
+                    <option>Derecho Civil</option>
+                    <option>Accidentes de Tránsito</option>
+                    <option>Sucesiones</option>
+                    <option>Derecho de Familia</option>
+                    <option>Derecho Penal</option>
+                    <option>Amparos de Salud</option>
+                    <option>Otra consulta</option>
+                </select>
+                <input type="text" name="notes" placeholder="Nota (opcional)">
+                <div class="lead-form-actions">
+                    <button type="button" class="btn btn-ghost" id="btn-add-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+
+            <div class="table-wrap">
+                <table class="lead-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Contacto</th>
+                            <th>Área</th>
+                            <th>Estado</th>
+                            <th class="th-actions">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lead-rows"></tbody>
+                </table>
+                <p class="empty" id="lead-empty" hidden>Todavía no hay leads registrados en este navegador.</p>
+            </div>
+        </section>
+
+        <!-- Configuración -->
+        <section class="sheet" aria-labelledby="h-config">
+            <div class="sheet-head">
+                <h2 id="h-config">Configuración del sitio</h2>
+                <p>Estos datos actualizan los botones y enlaces de la página pública.</p>
+            </div>
+            <form class="config-form" id="config-form">
+                <label>
+                    <span>WhatsApp (solo números, con 54)</span>
+                    <input type="text" name="phone" inputmode="numeric" placeholder="541125854569">
+                </label>
+                <label>
+                    <span>Email de contacto</span>
+                    <input type="email" name="email" placeholder="estudio@juridico.com.ar">
+                </label>
+                <label>
+                    <span>Instagram (URL completa)</span>
+                    <input type="url" name="instagram" placeholder="https://instagram.com/estudio">
+                </label>
+                <label>
+                    <span>PIN de este panel</span>
+                    <input type="text" name="adminPin" inputmode="numeric" placeholder="2026">
+                </label>
+                <label>
+                    <span>Color del sitio</span>
+                    <select name="theme">
+                        <option value="">Verde inglés (por defecto)</option>
+                        <option value="vino">Vino</option>
+                        <option value="azul">Azul tinta</option>
+                        <option value="violeta">Violeta toga</option>
+                    </select>
+                </label>
+                <div class="config-actions">
+                    <button type="submit" class="btn btn-primary">Guardar configuración</button>
+                    <span class="config-saved" id="config-saved" hidden>Guardado ✓</span>
+                </div>
+            </form>
+            <p class="storage-note">
+                Los leads y la configuración se guardan en este navegador (localStorage).
+                Exporte el CSV con frecuencia como respaldo.
+            </p>
+        </section>
+    </main>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
