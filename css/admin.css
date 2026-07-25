@@ -232,6 +232,20 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .channel-stat .cs-hint { font-size: 0.8125rem; color: var(--t-pap-lo); }
 
+/* Prioridad de leads */
+.prio {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.65625rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    vertical-align: middle;
+}
+.prio-urgente { color: #fff; background: var(--danger); }
+.prio-viable  { color: var(--ok); border: 1px solid var(--ok); }
+.prio-revisar { color: var(--t-pap-lo); border: 1px solid var(--line-pap); }
+
 /* Log del orientador */
 .orientador-log { list-style: none; border-top: 1px solid var(--line-pap); }
 .orientador-log li {

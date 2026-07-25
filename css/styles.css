@@ -647,6 +647,78 @@ ul, ol { list-style: none; }
 }
 .calc-result .btn { margin-bottom: 0.9rem; }
 
+/* pre-consulta guiada */
+.preconsulta {
+    margin-bottom: 1.75rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--accent-deep);
+    border-radius: 6px;
+    background: var(--paper);
+}
+.preconsulta[hidden] { display: none; }
+.pre-lede { color: var(--t-pap-lo); font-size: 0.9375rem; margin: 0.4rem 0 1.1rem; max-width: 54ch; }
+.pre-head[hidden], .pre-flow[hidden], .pre-contact[hidden], .pre-result[hidden] { display: none; }
+.pre-progress {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--t-pap-lo);
+    margin-bottom: 0.5rem;
+}
+.pre-q {
+    font-family: var(--font-display);
+    font-weight: 580; font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+}
+.pre-flow, .pre-contact, .pre-result { animation: triage-in 0.35s var(--ease-out); }
+.pre-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.pre-date {
+    font: inherit; font-size: 0.9375rem;
+    color: var(--t-pap-hi);
+    background: var(--paper-2);
+    border: 1px solid var(--line-pap);
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+}
+.pre-date:focus { outline: none; border-color: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-soft); }
+.pre-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+.pre-contact-grid input {
+    font: inherit; font-size: 0.9375rem;
+    color: var(--t-pap-hi);
+    background: var(--paper-2);
+    border: 1px solid var(--line-pap);
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    width: 100%;
+}
+.pre-contact-grid input:focus { outline: none; border-color: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-soft); }
+.pre-badge {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+}
+.pre-nota { font-size: 0.9375rem; color: var(--t-pap-lo); max-width: 58ch; margin-bottom: 1rem; }
+.pre-resumen {
+    border-top: 1px solid var(--line-pap);
+    margin-bottom: 1.25rem;
+    max-width: 480px;
+}
+.pre-resumen li {
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--line-pap);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+}
+.pre-result-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.75rem; }
+
 /* formulario "deje sus datos" */
 .dejar-datos {
     margin-top: clamp(2rem, 4vw, 3rem);
@@ -822,6 +894,8 @@ ul, ol { list-style: none; }
     .contact-form .btn { justify-self: stretch; }
     .calc-grid { grid-template-columns: 1fr; }
     .calc .btn, .calc-result .btn { width: 100%; }
+    .pre-contact-grid { grid-template-columns: 1fr; }
+    .preconsulta .btn { width: 100%; }
 }
 
 /* ═══ MOVIMIENTO REDUCIDO ═══ */

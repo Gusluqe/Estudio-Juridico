@@ -63,10 +63,10 @@
     }
 
     function renderOrientador() {
-        const TIPOS = { situacion: 'Eligió', calculadora: 'Calculadora', whatsapp: 'WhatsApp', formulario: 'Formulario' };
+        const TIPOS = { situacion: 'Eligió', calculadora: 'Calculadora', whatsapp: 'WhatsApp', formulario: 'Formulario', 'pre-consulta': 'Pre-consulta' };
         const items = getEvents()
-            .filter(e => e.type === 'situacion' || e.type === 'calculadora' || e.type === 'formulario' ||
-                (e.type === 'whatsapp' && /situaci|calculadora|formulario/.test(String(e.source))))
+            .filter(e => ['situacion', 'calculadora', 'formulario', 'pre-consulta'].includes(e.type) ||
+                (e.type === 'whatsapp' && /situaci|calculadora|formulario|pre-consulta/.test(String(e.source))))
             .sort((a, b) => b.at - a.at)
             .slice(0, 20);
         document.getElementById('orientador-empty').hidden = items.length > 0;
@@ -127,9 +127,10 @@
     function visibleLeads() {
         const q = searchEl.value.trim().toLowerCase();
         const st = filterEl.value;
+        const peso = l => l.priority === 'urgente' && l.status === 'nuevo' ? 0 : 1;
         return getLeads()
             .slice()
-            .sort((a, b) => b.createdAt - a.createdAt)
+            .sort((a, b) => peso(a) - peso(b) || b.createdAt - a.createdAt)
             .filter(l => !st || l.status === st)
             .filter(l => !q || [l.name, l.phone, l.email, l.area].some(v => String(v ?? '').toLowerCase().includes(q)));
     }
@@ -143,7 +144,7 @@
             const waMsg = encodeURIComponent(`Hola ${l.name.split(/\s+/)[0]}, le escribimos del Estudio Jurídico por su consulta${l.area ? ` sobre ${l.area}` : ''}.`);
             return `<tr data-id="${esc(l.id)}">
                 <td class="td-date">${fmtDate(l.createdAt)}<br>${fmtTime(l.createdAt)}</td>
-                <td class="td-name"><strong>${esc(l.name)}</strong>${l.notes ? `<small>${esc(l.notes)}</small>` : ''}<small>vía ${esc(l.channel)}</small></td>
+                <td class="td-name"><strong>${esc(l.name)}</strong>${l.priority ? ` <span class="prio prio-${esc(l.priority)}">${{ urgente: 'Urgente', viable: 'Viable', revisar: 'A revisar' }[l.priority] || esc(l.priority)}</span>` : ''}${l.notes ? `<small>${esc(l.notes)}</small>` : ''}<small>vía ${esc(l.channel)}</small></td>
                 <td class="td-contact">${esc(l.phone || '')}${l.email ? `<small>${esc(l.email)}</small>` : ''}</td>
                 <td>${esc(l.area || '')}</td>
                 <td>

@@ -353,6 +353,39 @@
                         </p>
                     </div>
                 </div>
+                <div class="preconsulta" id="preconsulta" hidden>
+                    <div class="pre-head">
+                        <h3 class="triage-label">Pre-consulta guiada · 1 minuto</h3>
+                        <p class="pre-lede">Responda unas pocas preguntas y su consulta llega ordenada y con prioridad, lista para que un abogado la evalúe.</p>
+                        <button class="btn btn-primary" id="pre-start" type="button">Iniciar pre-consulta</button>
+                    </div>
+                    <div class="pre-flow" id="pre-flow" hidden>
+                        <p class="pre-progress" id="pre-progress"></p>
+                        <h4 class="pre-q" id="pre-q"></h4>
+                        <div class="pre-opts" id="pre-opts"></div>
+                    </div>
+                    <div class="pre-contact" id="pre-contact" hidden>
+                        <p class="pre-progress">Último paso</p>
+                        <h4 class="pre-q">Sus datos, para responderle</h4>
+                        <div class="pre-contact-grid">
+                            <input type="text" id="pre-nombre" autocomplete="name" placeholder="Nombre y apellido">
+                            <input type="tel" id="pre-tel" autocomplete="tel" placeholder="Su WhatsApp (ej.: 11 5555-5555)">
+                        </div>
+                        <p class="form-error" id="pre-error" hidden>Complete su nombre y su WhatsApp.</p>
+                        <button class="btn btn-primary" id="pre-generar" type="button">Generar mi pre-consulta</button>
+                    </div>
+                    <div class="pre-result" id="pre-result" hidden>
+                        <p class="pre-badge" id="pre-badge"></p>
+                        <p class="pre-nota" id="pre-nota"></p>
+                        <ul class="pre-resumen" id="pre-resumen"></ul>
+                        <div class="pre-result-actions">
+                            <a class="btn btn-primary" id="pre-wa" href="#" target="_blank" rel="noopener">Enviar mi ficha por WhatsApp</a>
+                            <button class="btn btn-ghost" id="pre-reiniciar" type="button">Rehacer</button>
+                        </div>
+                        <p class="triage-fine">Su ficha quedó registrada. El profesional abogado evalúa su caso minuciosamente y le responde dentro del día hábil.</p>
+                    </div>
+                </div>
+
                 <div class="triage-cta">
                     <a class="btn btn-primary" id="triage-wa" href="#" target="_blank" rel="noopener">Contar mi caso por WhatsApp</a>
                     <p class="triage-fine">Orientación general basada en la normativa vigente. Su caso concreto se evalúa en la consulta, sin cargo.</p>

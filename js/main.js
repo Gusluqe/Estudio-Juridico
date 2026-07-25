@@ -320,6 +320,7 @@
         }
 
         document.getElementById('calc-despido').hidden = key !== 'despido';
+        resetPreconsulta(key);
 
         triageBox.hidden = false;
         trackEvent('situacion', key);
@@ -395,6 +396,227 @@
         trackEvent('calculadora', `estimado ${fmtARS(total)}`);
     });
     document.getElementById('calc-wa').addEventListener('click', () => trackEvent('whatsapp', 'calculadora'));
+
+    /* ── Pre-consulta guiada (intake con prioridad) ── */
+    const mesesDesde = fechaStr => {
+        const f = new Date(fechaStr + 'T12:00:00');
+        if (isNaN(f)) return null;
+        return (Date.now() - f.getTime()) / (30.44 * 86400000);
+    };
+    const fmtFecha = fechaStr => new Date(fechaStr + 'T12:00:00').toLocaleDateString('es-AR');
+
+    const PRE = {
+        despido: {
+            label: 'Despido',
+            steps: [
+                { id: 'fecha', q: '¿Cuándo fue el despido?', type: 'date', nombre: 'Fecha del despido' },
+                { id: 'registro', q: '¿Estaba registrado ("en blanco")?', type: 'choice', nombre: 'Registrado', opts: ['Sí', 'Parcialmente (mal registrado)', 'No, en negro'] },
+                { id: 'causa', q: '¿Cómo se lo comunicaron?', type: 'choice', nombre: 'Comunicación', opts: ['Sin causa', 'Con causa por escrito', 'Me hacen firmar renuncia o acuerdo', 'Aún no me lo confirmaron'] },
+                { id: 'telegrama', q: '¿Ya intimó por telegrama laboral?', type: 'choice', nombre: 'Telegrama enviado', opts: ['Sí', 'No', 'No sé qué es'] }
+            ],
+            evaluar(a) {
+                const m = mesesDesde(a.fecha);
+                if (a.causa && a.causa.startsWith('Me hacen firmar')) return { p: 'urgente', nota: 'No firme nada hasta hablar con un abogado: una firma puede costarle la indemnización.' };
+                if (m !== null && m > 24) return { p: 'revisar', nota: 'El plazo general de 2 años (art. 256 LCT) podría estar vencido. Consúltenos igual: hay supuestos que lo interrumpen o suspenden.' };
+                if (m !== null && m >= 18) return { p: 'urgente', nota: 'Le queda poco del plazo de 2 años para reclamar: conviene actuar cuanto antes.' };
+                return { p: 'viable', nota: 'Su reclamo está dentro del plazo legal.' };
+            }
+        },
+        accidente: {
+            label: 'Accidente',
+            steps: [
+                { id: 'tipo', q: '¿Qué tipo de accidente fue?', type: 'choice', nombre: 'Tipo', opts: ['En el trabajo o in itinere', 'De tránsito', 'En vía pública o comercio'] },
+                { id: 'fecha', q: '¿Cuándo ocurrió?', type: 'date', nombre: 'Fecha del hecho' },
+                { id: 'atencion', q: '¿Recibió atención médica con constancias?', type: 'choice', nombre: 'Atención médica', opts: ['Sí, tengo constancias', 'Me atendieron pero no tengo papeles', 'No me atendí aún'] },
+                { id: 'denuncia', q: '¿Hizo la denuncia (ART, policial o al seguro)?', type: 'choice', nombre: 'Denuncia', opts: ['Sí', 'No'] }
+            ],
+            evaluar(a) {
+                const plazo = a.tipo === 'En el trabajo o in itinere' ? 24 : 36;
+                const m = mesesDesde(a.fecha);
+                if (m !== null && m > plazo) return { p: 'revisar', nota: `El plazo de ${plazo / 12} años podría estar vencido. Consúltenos igual: la fecha desde la que se cuenta tiene matices.` };
+                if (m !== null && m >= plazo - 6) return { p: 'urgente', nota: 'El plazo para reclamar está por vencer: conviene actuar ya.' };
+                return { p: 'viable', nota: 'Su reclamo está dentro del plazo legal.' };
+            }
+        },
+        sucesion: {
+            label: 'Sucesión',
+            steps: [
+                { id: 'vinculo', q: '¿Qué vínculo tenía con el fallecido?', type: 'choice', nombre: 'Vínculo', opts: ['Hijo/a', 'Cónyuge', 'Padre / madre', 'Otro'] },
+                { id: 'bienes', q: '¿Qué bienes hay que transmitir?', type: 'choice', nombre: 'Bienes', opts: ['Inmueble/s', 'Vehículo/s', 'Cuentas o inversiones', 'Varios de los anteriores'] },
+                { id: 'acuerdo', q: '¿Los herederos están de acuerdo?', type: 'choice', nombre: 'Acuerdo entre herederos', opts: ['Sí', 'No', 'No hay contacto entre todos'] }
+            ],
+            evaluar() {
+                return { p: 'viable', nota: 'La sucesión puede iniciarse ya, incluso con un solo heredero.' };
+            }
+        },
+        salud: {
+            label: 'Amparo de salud',
+            steps: [
+                { id: 'tipo', q: '¿Qué le están negando?', type: 'choice', nombre: 'Cobertura negada', opts: ['Medicamento o tratamiento', 'Prestaciones por discapacidad (CUD)', 'Afiliación, baja o aumentos'] },
+                { id: 'negativa', q: '¿Tiene la negativa por escrito?', type: 'choice', nombre: 'Negativa por escrito', opts: ['Sí', 'La pedí y no responden', 'Todavía no la pedí'] },
+                { id: 'riesgo', q: '¿La salud se agrava si esto demora?', type: 'choice', nombre: 'Urgencia médica', opts: ['Sí, es urgente', 'Puede esperar unas semanas'] }
+            ],
+            evaluar(a) {
+                if (a.riesgo === 'Sí, es urgente') return { p: 'urgente', nota: 'Caso con urgencia médica: el amparo con medida cautelar puede ordenar la cobertura en días.' };
+                return { p: 'viable', nota: 'Caso con vía de amparo disponible.' };
+            }
+        },
+        familia: {
+            label: 'Familia',
+            steps: [
+                { id: 'tema', q: '¿Cuál es el tema principal?', type: 'choice', nombre: 'Tema', opts: ['Divorcio', 'Alimentos', 'Régimen de comunicación', 'Violencia familiar'] },
+                { id: 'hijos', q: '¿Hay hijos menores de edad?', type: 'choice', nombre: 'Hijos menores', opts: ['Sí', 'No'] },
+                { id: 'dialogo', q: '¿Hay diálogo con la otra parte?', type: 'choice', nombre: 'Diálogo con la otra parte', opts: ['Sí', 'Poco', 'Nada'] }
+            ],
+            evaluar(a) {
+                if (a.tema === 'Violencia familiar') return { p: 'urgente', nota: 'Si usted o sus hijos están en riesgo ahora, llame al 144 o al 911. Su caso se atiende con prioridad absoluta.' };
+                return { p: 'viable', nota: 'Caso de familia con vías de resolución disponibles.' };
+            }
+        },
+        otra: {
+            label: 'Consulta general',
+            steps: [
+                { id: 'antiguedad', q: '¿Hace cuánto ocurrió el problema?', type: 'choice', nombre: 'Antigüedad del problema', opts: ['Menos de 1 año', 'Entre 1 y 2 años', 'Más de 2 años', 'Está por ocurrir'] }
+            ],
+            evaluar(a) {
+                if (a.antiguedad === 'Más de 2 años') return { p: 'revisar', nota: 'Según la materia, algunos plazos podrían estar vencidos: lo revisamos en la consulta.' };
+                return { p: 'viable', nota: 'Cuéntenos su caso y lo orientamos.' };
+            }
+        }
+    };
+
+    const PRIO = {
+        urgente: { badge: '🔴 Prioridad urgente', valor: 'URGENTE' },
+        viable:  { badge: '🟢 Caso viable, a evaluar', valor: 'Viable' },
+        revisar: { badge: '⚪ A revisar (posibles plazos vencidos)', valor: 'A revisar' }
+    };
+
+    let preKey = null, preStep = 0, preAnswers = {};
+
+    const preEls = {
+        box: document.getElementById('preconsulta'),
+        head: document.querySelector('.pre-head'),
+        flow: document.getElementById('pre-flow'),
+        contact: document.getElementById('pre-contact'),
+        result: document.getElementById('pre-result'),
+        progress: document.getElementById('pre-progress'),
+        q: document.getElementById('pre-q'),
+        opts: document.getElementById('pre-opts')
+    };
+
+    function resetPreconsulta(key) {
+        preKey = PRE[key] ? key : null;
+        preStep = 0;
+        preAnswers = {};
+        preEls.box.hidden = !preKey;
+        preEls.head.hidden = false;
+        preEls.flow.hidden = true;
+        preEls.contact.hidden = true;
+        preEls.result.hidden = true;
+    }
+
+    function renderPreStep() {
+        const cfg = PRE[preKey];
+        if (preStep >= cfg.steps.length) {
+            preEls.flow.hidden = true;
+            preEls.contact.hidden = false;
+            document.getElementById('pre-nombre').focus();
+            return;
+        }
+        const step = cfg.steps[preStep];
+        preEls.progress.textContent = `Pregunta ${preStep + 1} de ${cfg.steps.length}`;
+        preEls.q.textContent = step.q;
+        preEls.opts.innerHTML = '';
+        if (step.type === 'date') {
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'pre-date';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-primary';
+            btn.textContent = 'Siguiente';
+            btn.addEventListener('click', () => {
+                if (!input.value) { input.focus(); return; }
+                preAnswers[step.id] = input.value;
+                preStep++;
+                renderPreStep();
+            });
+            preEls.opts.append(input, btn);
+        } else {
+            step.opts.forEach(op => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'chip chip-sm';
+                b.textContent = op;
+                b.addEventListener('click', () => {
+                    preAnswers[step.id] = op;
+                    preStep++;
+                    renderPreStep();
+                });
+                preEls.opts.appendChild(b);
+            });
+        }
+        preEls.flow.hidden = false;
+    }
+
+    document.getElementById('pre-start').addEventListener('click', () => {
+        preEls.head.hidden = true;
+        preStep = 0;
+        preAnswers = {};
+        renderPreStep();
+        trackEvent('pre-consulta', `inició: ${PRE[preKey].label}`);
+    });
+
+    document.getElementById('pre-reiniciar').addEventListener('click', () => resetPreconsulta(preKey));
+
+    document.getElementById('pre-generar').addEventListener('click', () => {
+        const nombre = document.getElementById('pre-nombre').value.trim();
+        const tel = document.getElementById('pre-tel').value.trim();
+        const errorEl = document.getElementById('pre-error');
+        if (nombre.length < 2 || tel.replace(/\D/g, '').length < 8) {
+            errorEl.hidden = false;
+            return;
+        }
+        errorEl.hidden = true;
+
+        const cfg = PRE[preKey];
+        const ev = cfg.evaluar(preAnswers);
+        const prio = PRIO[ev.p];
+
+        const lineas = cfg.steps
+            .filter(s => preAnswers[s.id])
+            .map(s => `${s.nombre}: ${s.type === 'date' ? fmtFecha(preAnswers[s.id]) : preAnswers[s.id]}`);
+
+        document.getElementById('pre-badge').textContent = prio.badge;
+        document.getElementById('pre-nota').textContent = ev.nota;
+        document.getElementById('pre-resumen').innerHTML = lineas.map(l => `<li>${l}</li>`).join('');
+
+        const ficha =
+            `FICHA DE PRE-CONSULTA · ${cfg.label}\n` +
+            lineas.map(l => `• ${l}`).join('\n') +
+            `\n• Prioridad: ${prio.valor}` +
+            `\nNombre: ${nombre} · WhatsApp: ${tel}`;
+        document.getElementById('pre-wa').href = `https://wa.me/${settings.phone}?text=${encodeURIComponent(ficha)}`;
+
+        const leads = readJSON('ej_leads', []);
+        leads.push({
+            id: `L${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+            name: nombre,
+            phone: tel,
+            area: cfg.label,
+            channel: 'pre-consulta',
+            notes: lineas.join(' · '),
+            priority: ev.p,
+            status: 'nuevo',
+            createdAt: Date.now()
+        });
+        writeJSON('ej_leads', leads);
+        trackEvent('pre-consulta', `${cfg.label} · ${prio.valor}`);
+
+        preEls.contact.hidden = true;
+        preEls.result.hidden = false;
+    });
+    document.getElementById('pre-wa').addEventListener('click', () => trackEvent('whatsapp', 'pre-consulta'));
     document.getElementById('triage-wa').addEventListener('click', () => {
         const activa = document.querySelector('#situaciones .chip.active');
         const sub = document.querySelector('#refine-chips .chip.active');
